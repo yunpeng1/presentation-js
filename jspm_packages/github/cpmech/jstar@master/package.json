@@ -1,0 +1,15 @@
+{
+  "jspm": {
+    "name": "app",
+    "main": "app.js",
+    "devDependencies": {
+      "plugin-babel": "npm:systemjs-plugin-babel@^0.0.12"
+    }
+  },
+  "scripts": {
+    "serve": "browser-sync start --files '*.html,*.js,css/**/*.css,src/**/*.js' --server",
+    "prodMode": "jspm bundle startup --inject",
+    "devMode": "jspm unbundle",
+    "bundle": "jspm bundle src/main.js"
+  }
+}

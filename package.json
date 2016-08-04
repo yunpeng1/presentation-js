@@ -1,0 +1,21 @@
+{
+  "jspm": {
+    "name": "app",
+    "main": "app.js",
+    "dependencies": {
+      "cpmech/jstar": "github:cpmech/jstar@master",
+      "hakimel/reveal.js": "github:hakimel/reveal.js@^3.3.0"
+    },
+    "devDependencies": {
+      "plugin-babel": "npm:systemjs-plugin-babel@^0.0.12"
+    }
+  },
+  "scripts": {
+    "serve": "browser-sync start --files '*.html,*.js,css/**/*.css,src/**/*.js,js/**/*.js,jspm_packages/github/cpmech/jstar@master/src/*.js' --server",
+    "prodMode": "jspm bundle startup --inject",
+    "devMode": "jspm unbundle"
+  },
+  "devDependencies": {
+    "jspm": "^0.17.0-beta.25"
+  }
+}

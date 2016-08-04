@@ -1,0 +1,46 @@
+# Cpmech presentation template
+
+cpmech Presentation Template using RevealJS and Jstar
+
+## Installation
+
+If you have the developer tools installed installed (see below), you can simply install the required dependencies with the following commands:
+
+```bash
+git clone https://github.com/cpmech/presentation.git
+cd presentation
+npm install jspm@beta --save-dev
+jspm install
+```
+
+## Writing your presentation
+
+Three files are required to type in your presentation:
+
+1. index.html
+2. src/presentation.js
+3. src/configuration.js
+
+If you're not using Plotxy, make sure to clear the file *src/presentation.js*.
+
+File *src/configuration.js* allows you to set RevealJS as explained here: https://github.com/hakimel/reveal.js/
+
+## Running your presentation
+
+```bash
+npm run serve
+```
+
+## Install tools if not available (first time)
+
+```bash
+sudo apt-get install nodejs-legacy npm
+sudo npm install -g browser-sync jspm@beta
+```
+
+## How to create a new JSPM package (dev setup)
+```
+jspm init
+jspm install github:hakimel/reveal.js
+jspm install github:cpmech/jstar
+```

@@ -1,0 +1,104 @@
+/* Copyright 2016 Dorival Pedroso. All rights reserved.
+ * Use of this source code is governed by a BSD-style
+ * license that can be found in the LICENSE file. */
+
+
+/***********************************************************************************************
+ * general settings */
+
+.cmd {
+    font-family: "Courier New", Courier, monospace !important;
+}
+
+
+/***********************************************************************************************
+ * left-right columns with different background colors */
+
+.LR-bg-in {
+    background-color: #9ab0e2;
+    width: 200%;
+    height: 1000%;
+    position: absolute;
+    top: -500%;
+    left: +55%;
+    z-index: -1;
+}
+
+.LR-bg-out {
+    background-color: #9ab0e2;
+    width: 200%;
+    height: 1000%;
+    position: absolute;
+    top: -500%;
+    left: -145%;
+    z-index: -1;
+}
+
+.LR-left {
+    width: 50%;
+    display: inline-block;
+    margin-right: 5% !important;
+    vertical-align: top !important;
+}
+
+.LR-left p {
+    text-align: right;
+}
+
+.LR-right {
+    width: 40%;
+    display: inline-block;
+}
+
+.LR-right p {
+    text-align: left;
+}
+
+
+/***********************************************************************************************
+ * handle two graphs in the same line */
+
+.graph-row {
+    display: inline-block;
+    border: 0;
+    padding: 0;
+    margin: 0;
+}
+
+.one-col-wide {
+    width: 100%;
+    border: 0;
+    padding: 0;
+    margin: 0;
+}
+
+.two-col-left {
+    float: left;
+    width: 50%;
+    border: 0;
+    padding: 0;
+    margin: 0;
+}
+
+.two-col-right {
+    float: right;
+    width: 50%;
+    border: 0;
+    padding: 0;
+    margin: 0;
+}
+
+.graph {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    overflow-y: hidden;
+}
+
+.subgraph {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    overflow-y: hidden;
+    display: block;
+}

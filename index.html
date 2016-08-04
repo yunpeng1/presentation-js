@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+<title>Cpmech Presentation Template</title>
+
+<meta charset="utf-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="jspm_packages/system.js"></script>
+<script src="jspm.config.js"></script>
+
+<link rel="stylesheet" href="css/reveal.css">
+<link rel="stylesheet" href="css/mypresent.css">
+
+<!-- CHOOSE THEME HERE -->
+<link rel="stylesheet" href="css/theme/league.css" id="theme">
+<link rel="stylesheet" href="css/highlight.color-brewer.css">
+</head>
+
+<body>
+
+<div class="reveal">
+<div class="slides">
+
+<!-- PRESENTATION STARTS HERE =========================================================== -->
+
+
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<section>
+<h2>Fractional steps FDM for time integration of porous media equations</h2>
+<a href="https://www.researchgate.net/profile/Yunpeng_Zhang11" target="_blank" title="My profile">Yunpeng
+  Zhang</a> 
+</section>
+
+
+
+<section>
+<h3>Outline</h3>
+<ul>
+<li> <a href="#/TPM" title="TPM"> Theory of Porous Media </a> </li>
+<li> <a href="#/PFD" title="PFD"> Numerical scheme </a></li>
+<li> <a href="#/Res" title="IBM"> Results and discussions </a> </li>
+</ul>
+</section>
+
+
+
+<section id="TPM">
+
+
+
+  <section>
+  <h3> <a href="#/OL" title="back"> Theory of Porous Media </a> </h3>
+  <img src="images/kinematics.png" alt="kinematics" style="width:398px;height:189px;border:0;">
+  \[ 
+  \begin{aligned}
+    &amp; \text{bal. of mass:} \quad
+    \frac{D^\alpha \rho_\alpha}{Dt}+\rho_\alpha\,\text{div}\,\mathbf{v}_\alpha=0
+    \\
+    &amp; \text{bal. lin. mom.:} \quad
+    \rho_\alpha\frac{D^\alpha \mathbf{v}_\alpha}{Dt} =
+    \mathbf{div}\,\mathbf{\sigma}_\alpha+\rho_\alpha\,\mathbf{g}+\hat{\mathbf{p}}_\alpha
+  \end{aligned}
+  \]
+  \[\]
+  \[\alpha \in \left\{(s)olid,\,(l)iquid,\,(g)as\right\},\quad\rho_\alpha=n_\alpha\,\rho^\alpha\]
+  </section>
+
+
+
+  <section>
+  <h3> <a href="#/OL" title="back"> Balance of mass </a> </h3>
+  \[ 
+    \frac{D^\alpha \rho_\alpha}{Dt}+\rho_\alpha\,\text{div}\,\mathbf{v}_\alpha=0
+  \]
+  <p class="fragment" data-fragment-index="2"> Assuming the intrinsic density $\rho^\alpha$ is
+  independent from spacial variation, then the balance of mass equations can be transferred
+  into the <b> balance of volume equations: </b></p>
+  <p class="fragment" data-fragment-index="3">
+  \[
+    \frac{D^\alpha n_\alpha}{Dt}+n_\alpha\,\text{div}\,\mathbf{v}_\alpha=0
+  \]
+  </p>
+  </section>
+
+
+
+  <section>
+  <h3> <a href="#/OL" title="back"> Balance of linear momentum </a> </h3>
+  \[ 
+  \begin{aligned}
+    \rho_\alpha\frac{D^\alpha \mathbf{v}_\alpha}{Dt} =
+    \mathbf{div}\,\mathbf{\sigma}_\alpha+\rho_\alpha\,\mathbf{g}+\hat{\mathbf{p}}_\alpha
+  \end{aligned}
+  \]
+  <br>
+  <p class="fragment" data-fragment-index="2">\[\rho_\alpha\frac{D^\alpha
+  \mathbf{v}_\alpha}{Dt} -\text{ is the inertial term}\]</p>
+  <p class="fragment" data-fragment-index="3">\[\mathbf{div}\,\mathbf{\sigma}_\alpha -\text{
+  is the internal stress term}\]</p>
+  <p class="fragment" data-fragment-index="4">\[\rho_\alpha\,\mathbf{g} - \text{ is the external
+  body force term}\]</p>
+  <p class="fragment" data-fragment-index="5">\[\hat{\mathbf{p}}_\alpha - \text{ is the external
+  interaction force term}\]</p>
+  </section>
+
+
+
+  <section>
+  <h3> <a href="#/OL" title="back"> two phases Governing equations </a> </h3>
+  \[ 
+  \begin{aligned}
+  &amp;n_\ell\bar{C}_\ell\,\dot{p}_\ell =
+   -\text{div}\,\mathbf{v}_s-\text{div}\,\mathbf{v}_\ell
+  \\
+  &amp;\rho_s\dot{\mathbf{v}}_s =
+  \mathbf{div}\left(\mathbf{\sigma}_e-n_s\,p_\ell\mathbf{I}\right)+\rho_s\,\mathbf{g}+\hat{\mathbf{p}}_s
+  \\
+  &amp;\rho_\ell\dot{\mathbf{v}}_\ell =
+  \mathbf{div}\left(-n_\ell\,p_\ell\mathbf{I}\right)+\rho_\ell\,\mathbf{g}+\hat{\mathbf{p}}_\ell
+  \end{aligned}
+  \]
+  <p class="fragment" data-fragment-index="2">By supposing zero relative acceptation between
+  fluid and solid and ignoring the effect of convective term, we can reach <b>simplified </b>
+  governing equations, as follows:</p>
+  <p class="fragment" data-fragment-index="3">
+  \[ 
+  \begin{gathered}
+  &amp;n_\ell\bar{C}_\ell\,\dot{p}_\ell =
+  \text{div}\left[\bar{\mathbf{K}}^{sat}_\ell\cdot\left(\mathbf{grad}\,p_\ell
+  -\rho^\ell\mathbf{g}\right)-\mathbf{v}\right]
+  \\
+  &amp;\rho\,\mathbf{a} =
+  \mathbf{div}\left(\mathbf{\sigma}_e-p_\ell\mathbf{I}\right)+\rho\,\mathbf{g}
+  \end{gathered}
+  \]
+  </p>
+  <p class="fragment" data-fragment-index="4">
+  where $\rho = \rho_s+\rho_\ell$
+  </p>
+  </section>
+
+
+
+</section>
+
+
+
+<section id="PFD">
+
+
+
+  <section>
+  <h3> <a href="index.html#/OL" title="back"> Numerical Scheme </a></h3>
+  <p>Govering equations in <b>updated</b> time</p>
+  \[ 
+  \begin{gathered}
+  &amp;n_\ell\bar{C}_\ell\,\dot{p}^{n+1}_\ell =
+  \text{div}\left[\bar{\mathbf{K}}^{sat}_\ell\cdot\left(\mathbf{grad}\,p_\ell^{n+1}
+  -\rho^\ell\mathbf{g}\right)-\mathbf{v}^{n+1}\right]
+  \\
+  &amp;\rho\,\mathbf{a}^{n+1} =
+  \mathbf{div}\left(\mathbf{\sigma}^{n+1}_e-p^{n+1}_\ell\mathbf{I}\right)+\rho\,\mathbf{g}
+  \end{gathered}
+  \]
+  <p class="fragment" data-fragment-index="1">
+  Then applying the Newmark's method:
+  \[ 
+  \begin{gathered}
+  \mathbf{u}^{n+1}=\mathbf{u}^p +\beta\gamma\,h^2\,\mathbf{a}^{n+1}
+  \\
+  \mathbf{v}^{n+1}=\mathbf{v}^p+\gamma\,h\,\mathbf{a}^{n+1}
+  \end{gathered}
+  \\
+  p_\ell^{n+1} = p^p_\ell+\theta\,h\,\dot{p}_\ell^{n+1}
+  \\
+  \mathbf{u}^p = \mathbf{u}^{n}+h\,\mathbf{v}^{n}+(\gamma-\beta\gamma)\,h^2\,\mathbf{a}^n
+  \\
+  \mathbf{v}^p = \mathbf{v}^{n}+(1.0-\gamma)\,h\,\mathbf{a}^n,\quad
+  p_\ell^p = p_\ell^n+(1.0-\theta)\,h\,\dot{p}_\ell^n
+  \]
+  </p>
+  </section>
+
+
+
+  <section>
+  <h3> <a href="index.html#/OL" title="back"> Numerical Scheme </a></h3>
+  <p>Governing equations become as follows</p>
+  \[ 
+  \begin{gathered}
+    n_\ell\bar{C}_\ell\,\dot{p}^{n+1}_\ell =
+    \text{div}\left[\bar{\mathbf{K}}^{sat}_\ell\cdot\left(\mathbf{grad}\,p_\ell^{p}
+    +\theta\,h\,\mathbf{grad}\,\dot{p}_\ell^{n+1}\right)\right]
+  \\
+  -\text{div}\left[\rho^\ell\bar{\mathbf{K}}_\ell^{sat}\cdot\mathbf{g}+
+  \mathbf{v}^{p}+\gamma\,h\,\mathbf{a}^{n+1}\right]
+  \\
+    \rho\,\mathbf{a}^{n+1} =
+    \mathbf{div}\left(\mathbf{\sigma}^{n+1}_e-p^{p}_\ell\mathbf{I}-\theta\,h\,\dot{p}^{n+1}_\ell\mathbf{I}\right)+\rho\,\mathbf{g}
+  \end{gathered}
+  \]
+  <br>
+  <p class="fragment" data-fragment-index="1">
+  Now applying the fractional splitting technique, we can get
+  \[ 
+  \begin{gathered}
+    \rho\,\mathbf{a}^{*} =
+    \mathbf{div}\left(\mathbf{\sigma}^{p}_e\right)+\rho\,\mathbf{g}
+  \\
+    \rho\,\mathbf{a}^{n+1} =
+   -\mathbf{div}\left(p^{p}_\ell\mathbf{I}+\theta\,h\,\dot{p}^{n+1}_\ell\mathbf{I}\right)
+   +\rho\,\mathbf{a}^{*}
+  \end{gathered}
+  \]
+  where $\mathbf{a}^{*}$ and $\mathbf{a}^{n+1}$ stands for the acceleration at intermediate
+  and final stage respectively.
+  </p>
+  </section>
+
+
+
+  <section>
+  <h3> <a href="index.html#/OL" title="back"> Numerical Scheme </a></h3>
+  <p>Substituting the expression of acceleration at final stage into balance of volume, we can
+  arrive:</p>
+  \[ 
+  \begin{gathered}
+    n_\ell\bar{C}_\ell\,\dot{p}^{n+1}_\ell =
+    \text{div}\left[\bar{\mathbf{K}}^{sat}_\ell\cdot\left(\mathbf{grad}\,p_\ell^{p}
+    +\theta\,h\,\mathbf{grad}\,\dot{p}_\ell^{n+1}\right)\right]
+  \\
+    +\text{div}\left[\frac{\gamma\,h}{\rho}\left(\mathbf{grad}\,p_\ell^{p}
+    +\theta\,h\,\mathbf{grad}\,\dot{p}_\ell^{n+1}\right)\right]
+  \\
+  -\text{div}\left[\rho^\ell\bar{\mathbf{K}}_\ell^{sat}\cdot\mathbf{g}+
+  \mathbf{v}^{p}+\gamma\,h\,\mathbf{a}^{*}\right]
+  \end{gathered}
+  \]
+  <p>which contains only one unknown $\dot{p}^{n+1}_\ell$ and hence the system is
+  decoupled.</p>
+  </section>
+
+
+
+  <section>
+  <h3> <a href="index.html#/OL" title="back"> Numerical Scheme </a></h3>
+  <p>Due to the rest of steps are lengthy, only the brief ideas will be presented here. </p>
+  <img src="images/EP0.png" alt="EP0" style="width:200px;height:200px;border:0;">
+  <img src="images/EP1.png" alt="EP1" style="width:200px;height:200px;border:0;">
+  <img src="images/EP2.png" alt="EP2" style="width:200px;height:200px;border:0;">
+  <img src="images/EP3.png" alt="EP3" style="width:200px;height:200px;border:0;">
+  <p>The idea is using ADI (alternating direction implicit) method to iteratively solve the second
+  order derivative in each direction. So that large size global stiffness matrix can be divided
+  into many small sub-matrix which can be efficiently solved.</p>
+  </section>
+
+
+
+</section>
+
+
+
+<section id="Res">
+  
+
+
+  <section>
+  <h3> <a href="index.html#/OL" title="back"> Results and discussions </a></h3>
+  <img src="images/Pic2D.jpg" alt="Pic2D" style="width:660px;height:330px;border:0;">
+  <p>A 2D plate-strain wave propagation problem for saturated porous domain is examined herein.
+  This example is aimed to test the accuracy and efficiency of the proposed numerical scheme. The
+  displacement at point ``A'' and pore pressure at point ``B'' will be traced.</p>
+  </section>
+
+
+  
+  <section>
+  <h3> <a href="index.html#/OL" title="back"> Results for high permeable media </a></h3>
+  <img src="images/e1.png" alt="Pic2D" style="width:600px;height:200px;border:0;">
+  <img src="images/E1.png" alt="Pic2D" style="width:600px;height:200px;border:0;">
+  <p> <font size="3">Figures (a) and (c) show the result of displacement at point ``A'' when using coarse and fine
+  mesh respectively. Similarly, Figures (b) and (d) illustrate the result of pore pressure at point
+  ``B'' when using coarse and fine mesh respectively.</font></p>
+  </section>
+
+
+
+  <section>
+  <h3> <a href="index.html#/OL" title="back"> Results for low permeable media </a></h3>
+  <img src="images/e2.png" alt="Pic2D" style="width:600px;height:200px;border:0;">
+  <img src="images/E2.png" alt="Pic2D" style="width:600px;height:200px;border:0;">
+  <p> <font size="3">Figures (a) and (c) show the result of displacement at point ``A'' when using coarse and fine
+  mesh respectively. Similarly, Figures (b) and (d) illustrate the result of pore pressure at point
+  ``B'' when using coarse and fine mesh respectively.</font></p>
+  </section>
+
+
+
+  <section>
+  <h3> <a href="index.html#/OL" title="back"> Convergence analysis </a></h3>
+  <img src="images/c1.png" alt="convergence analysis for up formulation"
+  style="width:600px;height:220px;border:0;">
+  <img src="images/c2.png" alt="convergence analysis for uvp formulation"
+  style="width:600px;height:220px;border:0;">
+  <p> <font size="3">Figures show the convergence behaviour for low and high permeable
+    porous media respectively.</font></p>
+  </section>
+
+
+
+  <section>
+  <h3> <a href="index.html#/OL" title="back"> Efficiency analysis </a></h3>
+  <img src="images/ef.png" alt="convergence analysis for up formulation"
+  style="width:600px;height:220px;border:0;">
+  <p> PFD(new scheme) is about 100 times faster than mixed order element method and about 10
+  times faster than ADF scheme. </p>
+  </section>
+
+
+
+</section>
+
+
+
+<section>
+<h3>Conclusions and outlook</h3>
+<ul>
+  <li>
+  New scheme can achieve similar accuracy as old schemes (first order in displacement and second
+  order in pore pressure);
+  </li>
+  <li>
+  New scheme is the fastest scheme among all analysed methods;
+  </li>
+  <li>
+  New scheme is well suited for solving high dimensional problems;
+  </li>
+  <li>
+  IBM (immersed boundary method) could be possibly incorporated for irregular geometry. 
+  </li>
+</ul>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- <section> -->
+<!-- <h3>1 Graph</h3> -->
+<!-- <div class="one-col-wide"> -->
+    <!-- <canvas class="graph" id="canvas-1" width=400 height=300> -->
+<!-- </div> -->
+<!-- </section> -->
+
+
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- <section> -->
+<!-- <h3>2 Graphs</h3> -->
+<!-- <div> -->
+    <!-- <div class="two-col-left"> -->
+        <!-- <canvas class="subgraph" id="canvas-2" width=400 height=300></canvas> -->
+    <!-- </div> -->
+    <!-- <div class="two-col-right"> -->
+        <!-- <canvas class="subgraph" id="canvas-3" width=400 height=300></canvas> -->
+    <!-- </div> -->
+<!-- </div> -->
+<!-- </section> -->
+
+
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- <section> -->
+<!-- <h3>Code</h3> -->
+<!-- <pre><code data-trim data-noescape> -->
+<!-- package main -->
+<!--  -->
+<!-- import "github.com/cpmech/gosl/io" -->
+<!--  -->
+<!-- func main() { -->
+	<!-- io.Pf("Hello World!") -->
+<!-- } -->
+<!-- </code></pre> -->
+<!-- </section> -->
+
+
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- <section> -->
+<!-- <h2>Popup</h2> -->
+<!-- <p>Click <a href="#here" data-modal>here for more information</a></p> -->
+<!-- <div id="here" style="display:none;"> -->
+    <!-- <h1>information</h1> -->
+    <!-- <p>Write more information here.</p> -->
+<!-- </div> -->
+<!-- </section> -->
+<!--  -->
+<!--  -->
+<!--  -->
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- <section> -->
+<!-- <div class="LR-bg-in"></div> -->
+<!-- <div> -->
+    <!-- <div class="LR-left"> -->
+        <!-- <p>look to the right ====&gt;</p> -->
+        <!-- <p>look to the right ====&gt;</p> -->
+        <!-- <p>look to the right ====&gt;</p> -->
+        <!-- <p>look to the right ====&gt;</p> -->
+    <!-- </div> -->
+    <!-- <div class="LR-right"> -->
+        <!-- <p>&lt;==== look to the left</p> -->
+        <!-- <p>&lt;==== look to the left</p> -->
+    <!-- </div> -->
+<!-- </div> -->
+<!-- <div class="fragment"> -->
+    <!-- <div class="LR-left"> -->
+        <!-- <p>more ====&gt;</p> -->
+    <!-- </div> -->
+    <!-- <div class="LR-right"> -->
+        <!-- <p>&lt;==== empty</p> -->
+    <!-- </div> -->
+<!-- </div> -->
+<!-- <div class="fragment"> -->
+    <!-- <div class="LR-left"> -->
+        <!-- <p>blah blah blah</p> -->
+        <!-- <p>and blah</p> -->
+    <!-- </div> -->
+    <!-- <div class="LR-right"> -->
+        <!-- <p>1</p> -->
+        <!-- <p>2</p> -->
+        <!-- <p>3</p> -->
+        <!-- <p>4</p> -->
+    <!-- </div> -->
+<!-- </div> -->
+<!-- </section> -->
+<!--  -->
+<!--  -->
+<!--  -->
+<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+<!-- <section> -->
+<!-- <div class="LR-bg-out"></div> -->
+<!-- <div> -->
+    <!-- <div class="LR-left"> -->
+        <!-- <p>look to the right ====&gt;</p> -->
+        <!-- <p>look to the right ====&gt;</p> -->
+        <!-- <p>look to the right ====&gt;</p> -->
+        <!-- <p>look to the right ====&gt;</p> -->
+    <!-- </div> -->
+    <!-- <div class="LR-right"> -->
+        <!-- <p>&lt;==== look to the left</p> -->
+        <!-- <p>&lt;==== look to the left</p> -->
+    <!-- </div> -->
+<!-- </div> -->
+<!-- <div class="fragment"> -->
+    <!-- <div class="LR-left"> -->
+        <!-- <p>more ====&gt;</p> -->
+    <!-- </div> -->
+    <!-- <div class="LR-right"> -->
+        <!-- <p>&lt;==== empty</p> -->
+    <!-- </div> -->
+<!-- </div> -->
+<!-- <div class="fragment"> -->
+    <!-- <div class="LR-left"> -->
+        <!-- <p>blah blah blah</p> -->
+        <!-- <p>and blah</p> -->
+    <!-- </div> -->
+    <!-- <div class="LR-right"> -->
+        <!-- <p>1</p> -->
+        <!-- <p>2</p> -->
+        <!-- <p>3</p> -->
+        <!-- <p>4</p> -->
+    <!-- </div> -->
+<!-- </div> -->
+<!-- </section> -->
+
+
+
+<!-- END OF PRESENTATION ================================================================ -->
+
+</div>
+</div>
+
+<script>
+SystemJS.import('src/main.js');
+</script>
+
+</body>
+</html>
