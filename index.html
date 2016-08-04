@@ -15,7 +15,7 @@
 <link rel="stylesheet" href="css/mypresent.css">
 
 <!-- CHOOSE THEME HERE -->
-<link rel="stylesheet" href="css/theme/league.css" id="theme">
+<link rel="stylesheet" href="css/theme/white.css" id="theme">
 <link rel="stylesheet" href="css/highlight.color-brewer.css">
 </head>
 
@@ -72,44 +72,6 @@
 
 
   <section>
-  <h3> <a href="#/OL" title="back"> Balance of mass </a> </h3>
-  \[ 
-    \frac{D^\alpha \rho_\alpha}{Dt}+\rho_\alpha\,\text{div}\,\mathbf{v}_\alpha=0
-  \]
-  <p class="fragment" data-fragment-index="2"> Assuming the intrinsic density $\rho^\alpha$ is
-  independent from spacial variation, then the balance of mass equations can be transferred
-  into the <b> balance of volume equations: </b></p>
-  <p class="fragment" data-fragment-index="3">
-  \[
-    \frac{D^\alpha n_\alpha}{Dt}+n_\alpha\,\text{div}\,\mathbf{v}_\alpha=0
-  \]
-  </p>
-  </section>
-
-
-
-  <section>
-  <h3> <a href="#/OL" title="back"> Balance of linear momentum </a> </h3>
-  \[ 
-  \begin{aligned}
-    \rho_\alpha\frac{D^\alpha \mathbf{v}_\alpha}{Dt} =
-    \mathbf{div}\,\mathbf{\sigma}_\alpha+\rho_\alpha\,\mathbf{g}+\hat{\mathbf{p}}_\alpha
-  \end{aligned}
-  \]
-  <br>
-  <p class="fragment" data-fragment-index="2">\[\rho_\alpha\frac{D^\alpha
-  \mathbf{v}_\alpha}{Dt} -\text{ is the inertial term}\]</p>
-  <p class="fragment" data-fragment-index="3">\[\mathbf{div}\,\mathbf{\sigma}_\alpha -\text{
-  is the internal stress term}\]</p>
-  <p class="fragment" data-fragment-index="4">\[\rho_\alpha\,\mathbf{g} - \text{ is the external
-  body force term}\]</p>
-  <p class="fragment" data-fragment-index="5">\[\hat{\mathbf{p}}_\alpha - \text{ is the external
-  interaction force term}\]</p>
-  </section>
-
-
-
-  <section>
   <h3> <a href="#/OL" title="back"> two phases Governing equations </a> </h3>
   \[ 
   \begin{aligned}
@@ -155,99 +117,6 @@
 
   <section>
   <h3> <a href="index.html#/OL" title="back"> Numerical Scheme </a></h3>
-  <p>Govering equations in <b>updated</b> time</p>
-  \[ 
-  \begin{gathered}
-  &amp;n_\ell\bar{C}_\ell\,\dot{p}^{n+1}_\ell =
-  \text{div}\left[\bar{\mathbf{K}}^{sat}_\ell\cdot\left(\mathbf{grad}\,p_\ell^{n+1}
-  -\rho^\ell\mathbf{g}\right)-\mathbf{v}^{n+1}\right]
-  \\
-  &amp;\rho\,\mathbf{a}^{n+1} =
-  \mathbf{div}\left(\mathbf{\sigma}^{n+1}_e-p^{n+1}_\ell\mathbf{I}\right)+\rho\,\mathbf{g}
-  \end{gathered}
-  \]
-  <p class="fragment" data-fragment-index="1">
-  Then applying the Newmark's method:
-  \[ 
-  \begin{gathered}
-  \mathbf{u}^{n+1}=\mathbf{u}^p +\beta\gamma\,h^2\,\mathbf{a}^{n+1}
-  \\
-  \mathbf{v}^{n+1}=\mathbf{v}^p+\gamma\,h\,\mathbf{a}^{n+1}
-  \end{gathered}
-  \\
-  p_\ell^{n+1} = p^p_\ell+\theta\,h\,\dot{p}_\ell^{n+1}
-  \\
-  \mathbf{u}^p = \mathbf{u}^{n}+h\,\mathbf{v}^{n}+(\gamma-\beta\gamma)\,h^2\,\mathbf{a}^n
-  \\
-  \mathbf{v}^p = \mathbf{v}^{n}+(1.0-\gamma)\,h\,\mathbf{a}^n,\quad
-  p_\ell^p = p_\ell^n+(1.0-\theta)\,h\,\dot{p}_\ell^n
-  \]
-  </p>
-  </section>
-
-
-
-  <section>
-  <h3> <a href="index.html#/OL" title="back"> Numerical Scheme </a></h3>
-  <p>Governing equations become as follows</p>
-  \[ 
-  \begin{gathered}
-    n_\ell\bar{C}_\ell\,\dot{p}^{n+1}_\ell =
-    \text{div}\left[\bar{\mathbf{K}}^{sat}_\ell\cdot\left(\mathbf{grad}\,p_\ell^{p}
-    +\theta\,h\,\mathbf{grad}\,\dot{p}_\ell^{n+1}\right)\right]
-  \\
-  -\text{div}\left[\rho^\ell\bar{\mathbf{K}}_\ell^{sat}\cdot\mathbf{g}+
-  \mathbf{v}^{p}+\gamma\,h\,\mathbf{a}^{n+1}\right]
-  \\
-    \rho\,\mathbf{a}^{n+1} =
-    \mathbf{div}\left(\mathbf{\sigma}^{n+1}_e-p^{p}_\ell\mathbf{I}-\theta\,h\,\dot{p}^{n+1}_\ell\mathbf{I}\right)+\rho\,\mathbf{g}
-  \end{gathered}
-  \]
-  <br>
-  <p class="fragment" data-fragment-index="1">
-  Now applying the fractional splitting technique, we can get
-  \[ 
-  \begin{gathered}
-    \rho\,\mathbf{a}^{*} =
-    \mathbf{div}\left(\mathbf{\sigma}^{p}_e\right)+\rho\,\mathbf{g}
-  \\
-    \rho\,\mathbf{a}^{n+1} =
-   -\mathbf{div}\left(p^{p}_\ell\mathbf{I}+\theta\,h\,\dot{p}^{n+1}_\ell\mathbf{I}\right)
-   +\rho\,\mathbf{a}^{*}
-  \end{gathered}
-  \]
-  where $\mathbf{a}^{*}$ and $\mathbf{a}^{n+1}$ stands for the acceleration at intermediate
-  and final stage respectively.
-  </p>
-  </section>
-
-
-
-  <section>
-  <h3> <a href="index.html#/OL" title="back"> Numerical Scheme </a></h3>
-  <p>Substituting the expression of acceleration at final stage into balance of volume, we can
-  arrive:</p>
-  \[ 
-  \begin{gathered}
-    n_\ell\bar{C}_\ell\,\dot{p}^{n+1}_\ell =
-    \text{div}\left[\bar{\mathbf{K}}^{sat}_\ell\cdot\left(\mathbf{grad}\,p_\ell^{p}
-    +\theta\,h\,\mathbf{grad}\,\dot{p}_\ell^{n+1}\right)\right]
-  \\
-    +\text{div}\left[\frac{\gamma\,h}{\rho}\left(\mathbf{grad}\,p_\ell^{p}
-    +\theta\,h\,\mathbf{grad}\,\dot{p}_\ell^{n+1}\right)\right]
-  \\
-  -\text{div}\left[\rho^\ell\bar{\mathbf{K}}_\ell^{sat}\cdot\mathbf{g}+
-  \mathbf{v}^{p}+\gamma\,h\,\mathbf{a}^{*}\right]
-  \end{gathered}
-  \]
-  <p>which contains only one unknown $\dot{p}^{n+1}_\ell$ and hence the system is
-  decoupled.</p>
-  </section>
-
-
-
-  <section>
-  <h3> <a href="index.html#/OL" title="back"> Numerical Scheme </a></h3>
   <p>Due to the rest of steps are lengthy, only the brief ideas will be presented here. </p>
   <img src="images/EP0.png" alt="EP0" style="width:200px;height:200px;border:0;">
   <img src="images/EP1.png" alt="EP1" style="width:200px;height:200px;border:0;">
@@ -274,17 +143,6 @@
   <p>A 2D plate-strain wave propagation problem for saturated porous domain is examined herein.
   This example is aimed to test the accuracy and efficiency of the proposed numerical scheme. The
   displacement at point ``A'' and pore pressure at point ``B'' will be traced.</p>
-  </section>
-
-
-  
-  <section>
-  <h3> <a href="index.html#/OL" title="back"> Results for high permeable media </a></h3>
-  <img src="images/e1.png" alt="Pic2D" style="width:600px;height:200px;border:0;">
-  <img src="images/E1.png" alt="Pic2D" style="width:600px;height:200px;border:0;">
-  <p> <font size="3">Figures (a) and (c) show the result of displacement at point ``A'' when using coarse and fine
-  mesh respectively. Similarly, Figures (b) and (d) illustrate the result of pore pressure at point
-  ``B'' when using coarse and fine mesh respectively.</font></p>
   </section>
 
 
